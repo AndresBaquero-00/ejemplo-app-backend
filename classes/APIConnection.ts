@@ -25,4 +25,8 @@ export class APIConnection {
                 process.exit(1);
             })
     }
+
+    public getConnection(): Connection {
+        return this.connection as Connection;
+    }
 }
