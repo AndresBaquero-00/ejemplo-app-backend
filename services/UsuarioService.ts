@@ -12,6 +12,20 @@ export class UsuarioService {
         this.logger = Logger.getLogger();
     }
 
+    public async actualizarUsuario(usuario: Usuario): Promise<void> {
+        this.logger.write({
+            message: `Actualizando usuario con código ${usuario.codigo}.`,
+            type: 'info'
+        });
+        const cursor = this.connection.getConnection();
+        const res = await cursor.execute(DatabaseOperations.ACTUALIZAR_USUARIO, [usuario.nombre, usuario.apellido, usuario.email, usuario.codigo]);
+        await cursor.commit();
+        this.logger.write({
+            message: `Usuario actualizado. Respuesta de la BD: ${JSON.stringify(res)}`,
+            type: 'info'
+        });
+    }
+
     public async listarUsuarios(): Promise<Usuario[]> {
         this.logger.write({
             message: `Consultando usuarios.`,
@@ -36,7 +50,7 @@ export class UsuarioService {
         const res = await cursor.execute(DatabaseOperations.INSERTAR_USUARIO, [usuario.codigo, usuario.nombre, usuario.apellido, usuario.email]);
         await cursor.commit();
         this.logger.write({
-            message: `Usuario insertado. Respuesta de la BD: ${res}`,
+            message: `Usuario insertado. Respuesta de la BD: ${JSON.stringify(res)}`,
             type: 'info'
         });
     }

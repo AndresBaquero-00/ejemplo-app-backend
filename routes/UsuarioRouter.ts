@@ -19,8 +19,42 @@ export class UsuarioRouter extends APIRouter {
         this.usuarioService = new UsuarioService();
         this.logger = Logger.getLogger();
 
+        this.router.put('/update/:codigo', this.usuarioMiddleware.validarDatosActualizacion, (req: Request, res: Response) => this.actualizarUsuario(req, res))
         this.router.get('/list', (req: Request, res: Response) => this.listarUsuarios(req, res));
         this.router.post('/create', this.usuarioMiddleware.validarDatosRegistro, (req: Request, res: Response) => this.crearUsuario(req, res));
+    }
+
+    public async actualizarUsuario(req: Request, res: Response): Promise<Response> {
+        const response = new APIResponse();
+
+        const { codigo } = req.params;
+        const { nombre, apellido, email } = req.body;
+        const usuario = new Usuario(Number(codigo), nombre, apellido, email);
+
+        try {
+            this.logger.write({
+                message: 'Iniciando operación de actualización de usuario.',
+                type: 'info'
+            });
+            await this.usuarioService.actualizarUsuario(usuario);
+            response.setSuccessOperation(undefined, 'Usuario modificado satisfactoriamente');
+        } catch (e) {
+            if (e instanceof ConnectionError) {
+                this.logger.write({
+                    message: `${e.name} ${e.message}`,
+                    type: 'error'
+                });
+                response.setFailService('Error al actualizar el usuario. Intente de nuevo.');
+            } else if (e instanceof Error) {
+                this.logger.write({
+                    message: `${e.name} ${e.message}`,
+                    type: 'error'
+                });
+                response.setFailService('Error al actualizar el usuario. Intente de nuevo.');
+            }
+        } finally {
+            return res.status(response.status).json(response);
+        }
     }
 
     public async listarUsuarios(req: Request, res: Response): Promise<Response> {
