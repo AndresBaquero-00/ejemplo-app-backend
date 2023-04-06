@@ -28,7 +28,7 @@ export class APIConnection {
             });
     }
 
-    public getConnection(): Connection {
-        return this.connection as Connection;
+    public getConnection(): Connection | undefined {
+        return this.connection;
     }
 }
