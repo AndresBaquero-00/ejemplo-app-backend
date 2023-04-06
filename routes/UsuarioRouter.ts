@@ -1,10 +1,11 @@
 import { Request, Response } from 'express';
 
-import { APIResponse, APIRouter, Usuario } from '../classes';
+import { APIResponse, Usuario } from '../model';
 import { ConnectionError } from '../errors';
 import { UsuarioMiddleware } from '../middlewares';
 import { UsuarioService } from '../services';
 import { Logger } from '../util';
+import { APIRouter } from './APIRouter';
 
 export class UsuarioRouter extends APIRouter {
 

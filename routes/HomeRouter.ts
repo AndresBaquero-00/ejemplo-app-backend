@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 
-import { APIResponse, APIRouter } from '../classes';
+import { APIResponse } from '../model';
+import { APIRouter } from './APIRouter';
 
 export class HomeRouter extends APIRouter {
     
