@@ -1,14 +1,17 @@
 import oracledb, { Connection, ConnectionAttributes } from 'oracledb';
 import dotenv from 'dotenv';
 import { ConnectionError } from '../errors';
+import { Logger } from '../util';
 
 export class APIConnection {
 
     private config: ConnectionAttributes;
     private connection: Connection | undefined;
+    private logger: Logger;
 
     public constructor(username?: string, password?: string) {
         dotenv.config();
+        this.logger = Logger.getLogger();
         this.config = {
             user: username ? username:process.env['db.user'],
             password: password ? password:process.env['db.password'],
@@ -22,10 +25,15 @@ export class APIConnection {
         oracledb.getConnection(this.config)
             .then(connection => {
                 this.connection = connection;
-                console.log('Base de datos conectada en: http://%s con usuario %s', this.config.connectString, this.config.user);
+                this.logger.write({
+                    message: `Base de datos conectada en: http://${this.config.connectString} con usuario ${this.config.user}`,
+                    type: 'info'
+                });
             }).catch(error => {
-                console.log('Error al conectar la base de datos.\n', error);
-                process.exit(1);
+                this.logger.write({
+                    message: `Error al conectar la base de datos. ${error}`,
+                    type: 'error'
+                });
             });
     }
 
