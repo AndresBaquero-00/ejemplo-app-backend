@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { APIResponse } from '../classes';
+import { APIResponse } from '../model';
 
 export class UsuarioMiddleware {
     
