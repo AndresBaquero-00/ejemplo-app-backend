@@ -19,8 +19,8 @@ export class EjemploApplication {
         this.start();
     }
 
-    private static start(): void{
-        this.server.listen(this.port, this.host, () =>{
+    private static start(): void {
+        this.server.listen(this.port, this.host, () => {
             console.log('Servidor activo en: http://%s:%d', this.host, this.port);
         });
     }
