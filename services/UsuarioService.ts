@@ -12,6 +12,21 @@ export class UsuarioService {
         this.logger = Logger.getLogger();
     }
 
+    public async listarUsuarios(): Promise<Usuario[]> {
+        this.logger.write({
+            message: `Consultando usuarios.`,
+            type: 'info'
+        });
+        const cursor = this.connection.getConnection();
+        const res = await cursor.execute<any[]>(DatabaseOperations.CONSULTAR_USUARIOS);
+        const usuarios: Usuario[] = res.rows?.map(row => new Usuario(row.at(0), row.at(1), row.at(2), row.at(3))) as Usuario[];
+        this.logger.write({
+            message: `Usuarios consultados satisfactoriamente.`,
+            type: 'info'
+        });
+        return usuarios;
+    }
+
     public async crearUsuario(usuario: Usuario): Promise<void> {
         this.logger.write({
             message: `Insertando usuario ${usuario.codigo} en la BD.`,

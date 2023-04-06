@@ -19,7 +19,37 @@ export class UsuarioRouter extends APIRouter {
         this.usuarioService = new UsuarioService();
         this.logger = Logger.getLogger();
 
+        this.router.get('/list', (req: Request, res: Response) => this.listarUsuarios(req, res));
         this.router.post('/create', this.usuarioMiddleware.validarDatosRegistro, (req: Request, res: Response) => this.crearUsuario(req, res));
+    }
+
+    public async listarUsuarios(req: Request, res: Response): Promise<Response> {
+        const response = new APIResponse();
+
+        try {
+            this.logger.write({
+                message: 'Iniciando operación de lista de usuarios.',
+                type: 'info'
+            });
+            const usuarios = await this.usuarioService.listarUsuarios();
+            response.setSuccessOperation(usuarios, 'Usuarios consultados satisfactoriamente');
+        } catch (e) {
+            if (e instanceof ConnectionError) {
+                this.logger.write({
+                    message: `${e.name} ${e.message}`,
+                    type: 'error'
+                });
+                response.setFailService('Error al consultar los usuarios. Intente de nuevo.');
+            } else if (e instanceof Error) {
+                this.logger.write({
+                    message: `${e.name} ${e.message}`,
+                    type: 'error'
+                });
+                response.setFailService('Error al consultar los usuarios. Intente de nuevo.');
+            }
+        } finally {
+            return res.status(response.status).json(response);
+        }
     }
 
     public async crearUsuario(req: Request, res: Response): Promise<Response> {
@@ -34,20 +64,20 @@ export class UsuarioRouter extends APIRouter {
                 type: 'info'
             });
             await this.usuarioService.crearUsuario(usuario);
-            response.setSuccessOperation("Usuario insertado satisfactoriamente.");
+            response.setSuccessOperation('Usuario insertado satisfactoriamente.');
         } catch (e) {
             if (e instanceof ConnectionError) {
                 this.logger.write({
                     message: `${e.name} ${e.message}`,
                     type: 'error'
                 });
-                response.setFailService("Error al insertar el usuario. Intente de nuevo.");
+                response.setFailService('Error al insertar el usuario. Intente de nuevo.');
             } else if (e instanceof Error) {
                 this.logger.write({
                     message: `${e.name} ${e.message}`,
                     type: 'error'
                 });
-                response.setFailService("Error al insertar el usuario. Intente de nuevo.");
+                response.setFailService('Error al insertar el usuario. Intente de nuevo.');
             }
         } finally {
             return res.status(response.status).json(response);
