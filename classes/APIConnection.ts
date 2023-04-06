@@ -21,11 +21,11 @@ export class APIConnection {
         oracledb.getConnection(this.config)
             .then(connection => {
                 this.connection = connection;
-                console.log('Base de datos conectada en: http://%s', this.config.connectString);
+                console.log('Base de datos conectada en: http://%s con usuario %s', this.config.connectString, this.config.user);
             }).catch(error => {
                 console.log('Error al conectar la base de datos.\n', error);
                 process.exit(1);
-            })
+            });
     }
 
     public getConnection(): Connection {
