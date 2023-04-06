@@ -1,4 +1,5 @@
-import { APIConnection, Usuario } from '../classes';
+import { APIConnection } from '../connection';
+import { Usuario } from '../model';
 import { DatabaseOperations, Logger } from '../util';
 
 export class UsuarioService {
