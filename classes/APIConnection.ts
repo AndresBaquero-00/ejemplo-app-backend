@@ -13,9 +13,11 @@ export class APIConnection {
             password: password ? password:process.env['db.password'],
             connectString: `${process.env['db.host']}:${process.env['db.port']}/${process.env['db.database']}`,
         }
+
+        this.start();
     }
 
-    public start(): void {
+    private start(): void {
         oracledb.getConnection(this.config)
             .then(connection => {
                 this.connection = connection;
