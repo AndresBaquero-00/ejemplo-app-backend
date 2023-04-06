@@ -1,5 +1,6 @@
 import oracledb, { Connection, ConnectionAttributes } from 'oracledb';
 import dotenv from 'dotenv';
+import { ConnectionError } from '../errors';
 
 export class APIConnection {
 
@@ -28,7 +29,10 @@ export class APIConnection {
             });
     }
 
-    public getConnection(): Connection | undefined {
-        return this.connection;
+    public getConnection(): Connection {
+        if (this.connection)
+            return this.connection;
+        
+        throw new ConnectionError('La conexión con la BD no ha sido establecida.');
     }
 }
