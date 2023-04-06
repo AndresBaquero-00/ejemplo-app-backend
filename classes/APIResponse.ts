@@ -4,6 +4,7 @@ export class APIResponse<T = any> {
     // Códigos de estado http.
     public static readonly OK = 200;
     public static readonly INTERNAL_SERVER_ERROR = 500;
+    public static readonly BAD_REQUEST = 400;
 
     /**
      * Estado que tendrá la respuesta http realizada.
@@ -36,9 +37,15 @@ export class APIResponse<T = any> {
     }
 
     public setFailService(message?: string): void {
-        this.state = true;
+        this.state = false;
         this.status = APIResponse.INTERNAL_SERVER_ERROR;
         this.message = message ? message:'Fallo en el servidor.';
+    }
+
+    public setBadRequest(message?: string): void {
+        this.state = false;
+        this.status = APIResponse.BAD_REQUEST;
+        this.message = message ? message:'Error en el envío de la petición.';
     }
 
 }
